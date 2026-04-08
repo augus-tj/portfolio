@@ -1,0 +1,98 @@
+[
+  {
+    "name": "CCNA: Switching, Routing, and Wireless Essentials",
+    "image": "https://images.credly.com/images/f4ccdba9-dd65-4349-baad-8f05df116443/CCNASRWE__1_.png",
+    "url": "https://www.credly.com/badges/ef2afcef-7484-4a39-9b12-82b3f6a599ed/public_url",
+    "skills": [
+      "VLAN Configuration",
+      "Inter-VLAN Routing",
+      "Wireless LAN Setup",
+      "Switching Concepts",
+      "Network Security Basics"
+    ]
+  },
+  {
+    "name": "CCNA: Enterprise Networking, Security, and Automation",
+    "image": "https://images.credly.com/images/0a6d331e-8abf-4272-a949-33f754569a76/CCNAENSA__1_.png",
+    "url": "https://www.credly.com/badges/1378fcf6-d701-4583-8c5f-2ac8ffc6ab98/public_url",
+    "skills": [
+      "OSPF Routing",
+      "Network Automation",
+      "Security Concepts",
+      "WAN Technologies",
+      "Virtualization Basics"
+    ]
+  },
+  {
+    "name": "IT Customer Support Basics",
+    "image": "https://images.credly.com/images/474a03c6-b5e1-44df-b313-adf0fed6c531/blob",
+    "url": "https://www.credly.com/badges/20ee8a18-c7a4-4ce8-891a-9419268a6401/public_url",
+    "skills": [
+      "Technical Support",
+      "Troubleshooting Techniques",
+      "Customer Communication",
+      "Ticketing Systems",
+      "Basic IT Concepts"
+    ]
+  },
+  {
+    "name": "Network Addressing and Basic Troubleshooting",
+    "image": "https://images.credly.com/images/49c099bd-8542-4f48-8c03-f21799dcaf51/image.png",
+    "url": "https://www.credly.com/badges/6a9b6ea6-a396-40f9-bf48-e0ae19d5b5dc/public_url",
+    "skills": [
+      "IP Addressing",
+      "Subnetting",
+      "Network Troubleshooting",
+      "IPv4 & IPv6",
+      "Ping & Diagnostic Tools"
+    ]
+  },
+  {
+    "name": "Networking Basics",
+    "image": "https://images.credly.com/images/5bdd6a39-3e03-4444-9510-ecff80c9ce79/image.png",
+    "url": "https://www.credly.com/badges/e6a59720-1b72-4f02-86cf-170f0a0c9896/public_url",
+    "skills": [
+      "OSI Model",
+      "TCP/IP Fundamentals",
+      "Network Types",
+      "Basic Protocols",
+      "Data Transmission"
+    ]
+  },
+  {
+    "name": "Networking Devices and Initial Configuration",
+    "image": "https://images.credly.com/images/88316fe8-5651-4e61-a6be-5be1558f049e/image.png",
+    "url": "https://www.credly.com/badges/686017bf-05e5-4c3b-8e60-feb46f86624b/public_url",
+    "skills": [
+      "Router Configuration",
+      "Switch Setup",
+      "CLI Commands",
+      "Device Initialization",
+      "Basic Security Setup"
+    ]
+  },
+  {
+    "name": "Network Support and Security",
+    "image": "https://images.credly.com/images/a4dd891f-7bf5-4938-8241-50dc81e8cc00/image.png",
+    "url": "https://www.credly.com/badges/cba1532e-a884-4662-bd9a-707c5439a185/public_url",
+    "skills": [
+      "Network Security",
+      "Access Control",
+      "Threat Detection",
+      "Secure Configuration",
+      "Monitoring Tools"
+    ]
+  },
+  {
+    "name": "Network Technician Career Path",
+    "image": "https://images.credly.com/images/978f88dc-c247-4093-9d39-6efac3651297/image.png",
+    "url": "https://www.credly.com/badges/ea4f264a-2668-40fe-87a1-e71c9418c0a5/public_url",
+    "skills": [
+      "Network Maintenance",
+      "Troubleshooting",
+      "Device Management",
+      "Technical Documentation",
+      "IT Support Skills"
+    ]
+  }
+]
