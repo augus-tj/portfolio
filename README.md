@@ -12,5 +12,7 @@ portfolio/
 │   └── duitnowqr.png   ← Add your DuitNow QR image here
 │   └── .....
 └── README.md
+```
 
 Link: https://augus-tj.github.io/portfolio/
+
