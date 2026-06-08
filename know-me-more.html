@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Know Me More — Augustine</title>
+<title>Know Me More</title>
+ <link rel="icon" type="image/png" href="assets/cat.png">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{
@@ -437,9 +438,12 @@ const chaosMessages=[
   ["ILLEGAL OPERATION","mango.dev has performed an illegal operation.\n(just kidding it's legal)"],
 ];
 let chaosActive=false;
+let chaosHasFired=false;  // only fires once per session (resets on tab close)
 const chaosEl=[];
 
 function startChaos(){
+  if(chaosHasFired) return;  // already ran this session, do nothing
+  chaosHasFired=true;
   chaosActive=true;
   for(let i=0;i<50;i++){
     setTimeout(spawnPopup, i*60);
