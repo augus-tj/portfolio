@@ -19,11 +19,6 @@
     background:#000;display:flex;align-items:center;justify-content:center;
     flex-direction:column;
   }
-  #rickroll-overlay iframe{
-    width:min(100vw,177vh);
-    height:min(56.25vw,100vh);
-    border:none;
-  }
   #skip-btn{
     position:fixed;top:20px;right:20px;z-index:10000;
     background:#CC0000;color:#fff;border:none;
@@ -44,152 +39,266 @@
     transition:opacity .7s ease,transform .7s ease;
   }
   #desktop.visible{opacity:1;transform:none}
-
-  /* gradient overlay on desktop bg */
   #desktop::before{
     content:'';position:absolute;inset:0;
     background:linear-gradient(135deg,
-      rgba(255,105,180,0.25),
-      rgba(0,255,255,0.25),
-      rgba(255,255,0,0.18));
+      rgba(255,105,180,0.2),rgba(0,255,255,0.2),rgba(255,255,0,0.15));
     pointer-events:none;z-index:0;
   }
 
   /* ── DESKTOP ICONS ── */
   .icon-col{
     position:absolute;top:10px;left:0;z-index:1;
-    display:flex;flex-direction:column;gap:10px;padding:6px;
+    display:flex;flex-direction:column;gap:6px;padding:6px;
   }
   .desktop-icon{
     width:80px;display:flex;flex-direction:column;align-items:center;
     padding:4px;cursor:pointer;border-radius:2px;
   }
   .desktop-icon:hover .icon-label,
-  .desktop-icon.selected .icon-label{
-    background:#000080;color:#fff;
-  }
+  .desktop-icon.selected .icon-label{background:#000080;color:#fff;}
   .desktop-icon img{width:32px;height:32px;image-rendering:pixelated}
+  .icon-emoji{font-size:28px;line-height:1;margin-bottom:2px}
   .icon-label{
     font-size:11px;color:#fff;text-align:center;
-    text-shadow:1px 1px 1px #000;
-    padding:1px 2px;border-radius:1px;margin-top:3px;
-    line-height:1.3;
+    text-shadow:1px 1px 2px #000,0 0 4px #000;
+    padding:1px 3px;border-radius:1px;margin-top:2px;line-height:1.3;
   }
 
-  /* ── WIN98 WINDOW ── */
+  /* ── WIN98 WINDOW BASE ── */
   .win98-window{
     position:absolute;
-    min-width:260px;max-width:95vw;
+    min-width:240px;min-height:120px;
     background:#C0C0C0;
-    border-top:2px solid #fff;
-    border-left:2px solid #fff;
-    border-right:2px solid #808080;
-    border-bottom:2px solid #808080;
-    z-index:200;
-    box-shadow:2px 2px 0 #000;
+    border-top:2px solid #fff;border-left:2px solid #fff;
+    border-right:2px solid #808080;border-bottom:2px solid #808080;
+    z-index:200;box-shadow:2px 2px 0 #000;
     font-family:'Courier New',monospace;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+  }
+  /* custom resize handle via JS — no CSS resize to keep flex layout clean */
+  .resize-handle{
+    position:absolute;bottom:0;right:0;
+    width:14px;height:14px;cursor:se-resize;z-index:10;
+    background:linear-gradient(135deg,transparent 40%,#808080 40%,#808080 50%,#fff 50%,#fff 60%,#808080 60%);
   }
   .win98-titlebar{
     height:26px;padding:0 4px;
     background:linear-gradient(90deg,#000080,#1084d0);
     display:flex;align-items:center;justify-content:space-between;
     color:#fff;font-size:11px;font-weight:bold;
-    cursor:move;
+    cursor:move;flex-shrink:0;user-select:none;
   }
-  .win98-titlebar .title-text{
-    display:flex;align-items:center;gap:6px;font-size:11px;
-  }
-  .win98-titlebar .title-text img{width:14px;height:14px;image-rendering:pixelated}
-  .win98-close{
+  .title-text{display:flex;align-items:center;gap:5px;font-size:11px;overflow:hidden;white-space:nowrap;min-width:0}
+  .win98-btns{display:flex;gap:2px;flex-shrink:0}
+  .win98-min,.win98-max,.win98-close{
     width:16px;height:14px;
     background:#C0C0C0;color:#000;
     border-top:1px solid #fff;border-left:1px solid #fff;
     border-right:1px solid #808080;border-bottom:1px solid #808080;
-    font-size:10px;font-weight:bold;cursor:pointer;
+    font-size:9px;font-weight:bold;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
-    font-family:'Courier New',monospace;
+    font-family:'Courier New',monospace;flex-shrink:0;
   }
-  .win98-close:active{
+  .win98-min:active,.win98-max:active,.win98-close:active{
     border-top:1px solid #808080;border-left:1px solid #808080;
     border-right:1px solid #fff;border-bottom:1px solid #fff;
   }
-  .win98-content{padding:12px;font-size:11px;color:#000}
+  .win98-content{
+    padding:10px;font-size:11px;color:#000;
+    flex:1;overflow:auto;min-height:0;
+  }
+  .win98-content::-webkit-scrollbar{width:14px}
+  .win98-content::-webkit-scrollbar-track{background:#C0C0C0;border:1px inset #808080}
+  .win98-content::-webkit-scrollbar-thumb{
+    background:#C0C0C0;
+    border-top:1px solid #fff;border-left:1px solid #fff;
+    border-right:1px solid #808080;border-bottom:1px solid #808080;
+  }
   .win98-btn{
-    display:inline-block;padding:4px 14px;
+    display:inline-block;padding:4px 12px;
     background:#C0C0C0;color:#000;
     border-top:1.5px solid #fff;border-left:1.5px solid #fff;
     border-right:1.5px solid #808080;border-bottom:1.5px solid #808080;
     font-size:11px;font-family:'Courier New',monospace;
-    cursor:pointer;font-weight:bold;
+    cursor:pointer;font-weight:bold;white-space:nowrap;
   }
   .win98-btn:active{
     border-top:1.5px solid #808080;border-left:1.5px solid #808080;
     border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;
-    padding:5px 13px 3px 15px;
+    padding:5px 11px 3px 13px;
   }
+  .win98-statusbar{
+    flex-shrink:0;
+    border-top:1px solid #808080;padding:2px 4px;
+    font-size:10px;color:#000;background:#C0C0C0;
+    display:flex;gap:4px;
+  }
+  .status-cell{
+    border-top:1px solid #808080;border-left:1px solid #808080;
+    border-right:1px solid #fff;border-bottom:1px solid #fff;
+    padding:1px 5px;font-size:10px;white-space:nowrap;
+  }
+
+  /* ── DEFAULT WINDOW SIZES ── */
+  #about-win    {top:50px; left:80px;  width:420px;height:350px}
+  #network-win  {top:60px; left:120px; width:380px;height:310px}
+  #music-win    {top:55px; left:100px; width:440px;height:400px}
+  #games-win    {top:50px; left:90px;  width:560px;height:440px}
+  #freelance-win{top:65px; left:110px; width:420px;height:380px}
+  #docs-win     {top:60px; left:130px; width:400px;height:320px}
+  #recycle-win  {top:80px; left:150px; width:340px;height:260px}
+  #donate-win   {top:70px; left:calc(50% - 170px);width:340px;height:310px}
+  #art-win      {top:55px; left:95px;  width:460px;height:380px}
+
+  /* ── GAME CARDS ── */
+  .game-grid{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0}
+  .game-card{
+    width:148px;background:#fff;
+    border-top:2px solid #fff;border-left:2px solid #fff;
+    border-right:2px solid #808080;border-bottom:2px solid #808080;
+    cursor:pointer;transition:filter .1s;
+  }
+  .game-card:hover{filter:brightness(0.93)}
+  .game-card:active{
+    border-top:2px solid #808080;border-left:2px solid #808080;
+    border-right:2px solid #fff;border-bottom:2px solid #fff;
+  }
+  .game-thumb{
+    height:84px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;
+  }
+  .game-info{padding:5px 6px;background:#C0C0C0;border-top:1px solid #808080}
+  .game-title{font-size:10px;font-weight:bold;color:#000;margin-bottom:2px;line-height:1.3}
+  .game-tech{font-size:9px;color:#444;margin-bottom:2px}
+  .game-badge{
+    display:inline-block;background:#000080;color:#fff;
+    font-size:8px;padding:1px 4px;margin-top:2px;
+  }
+
+  /* ── MUSIC PLAYER ── */
+  .music-player{
+    background:#000080;color:#fff;
+    border-top:2px solid #1084d0;border-left:2px solid #1084d0;
+    border-right:2px solid #000040;border-bottom:2px solid #000040;
+    padding:10px;margin-bottom:10px;text-align:center;
+  }
+  .music-visualizer{
+    display:flex;align-items:flex-end;justify-content:center;gap:3px;
+    height:40px;margin:8px 0;
+  }
+  .music-bar{width:6px;background:#00FF00;animation:musicbar 0.6s ease-in-out infinite alternate}
+  .music-bar:nth-child(2){animation-delay:.1s}.music-bar:nth-child(3){animation-delay:.2s}
+  .music-bar:nth-child(4){animation-delay:.05s}.music-bar:nth-child(5){animation-delay:.15s}
+  .music-bar:nth-child(6){animation-delay:.25s}.music-bar:nth-child(7){animation-delay:.08s}
+  @keyframes musicbar{from{height:6px}to{height:36px}}
+  .music-track{
+    padding:4px 6px;cursor:pointer;font-size:11px;
+    border-bottom:1px solid #D0D0D0;
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+  }
+  .music-track:hover{background:#000080;color:#fff}
+  .music-track.playing{background:#000080;color:#0FF}
+
+  /* ── LINKEDIN CARD ── */
+  .linkedin-card{
+    background:#0077B5;color:#fff;padding:12px;margin-bottom:10px;
+    border-top:2px solid #0095D9;border-left:2px solid #0095D9;
+    border-right:2px solid #005580;border-bottom:2px solid #005580;
+    text-align:center;
+  }
+
+  /* ── SERVICE ROW ── */
+  .service-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #D0D0D0}
+  .service-row:last-of-type{border-bottom:none}
+  .service-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+  .service-title{font-weight:bold;font-size:11px;margin-bottom:2px}
+  .service-desc{font-size:10px;color:#333;line-height:1.4}
+  .service-badge{display:inline-block;background:#000080;color:#fff;font-size:9px;padding:1px 5px;margin-top:3px;margin-right:2px}
+
+  /* ── DOCS ── */
+  .doc-row{display:flex;align-items:center;gap:8px;padding:5px 4px;cursor:pointer;font-size:11px}
+  .doc-row:hover{background:#000080;color:#fff}
+
+  /* ── RECYCLE BIN ── */
+  .recycle-item{display:flex;align-items:center;gap:8px;padding:4px 6px;font-size:11px;border-bottom:1px solid #D4D0C8;cursor:default}
+  .recycle-item:hover{background:#000080;color:#fff}
+
+  /* ── ART WINDOW ── */
+  .art-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .art-piece{
+    width:120px;height:90px;
+    border-top:2px solid #fff;border-left:2px solid #fff;
+    border-right:2px solid #808080;border-bottom:2px solid #808080;
+    background:linear-gradient(135deg,#1a0533,#330066);
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;cursor:pointer;
+    transition:filter .15s;
+  }
+  .art-piece:hover{filter:brightness(1.2)}
+  .art-caption{font-size:9px;color:#333;text-align:center;margin-top:2px}
 
   /* ── CHAOS POPUP ── */
   .chaos-popup{
-    position:fixed;z-index:8000;
-    background:#C0C0C0;
+    position:fixed;z-index:8000;background:#C0C0C0;
     border-top:2px solid #fff;border-left:2px solid #fff;
     border-right:2px solid #808080;border-bottom:2px solid #808080;
-    width:260px;
-    box-shadow:2px 2px 4px rgba(0,0,0,0.5);
-    font-family:'Courier New',monospace;
-    animation:popup-in .15s ease;
+    width:260px;box-shadow:2px 2px 4px rgba(0,0,0,0.5);
+    font-family:'Courier New',monospace;animation:popup-in .15s ease;
   }
   @keyframes popup-in{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}
   .chaos-popup .win98-titlebar{cursor:default}
-  .chaos-popup .popup-body{
-    padding:10px;display:flex;align-items:flex-start;gap:10px;
-  }
-  .chaos-popup .popup-icon{font-size:24px;flex-shrink:0;margin-top:2px}
-  .chaos-popup .popup-text{font-size:11px;line-height:1.5}
-  .chaos-popup .popup-btns{
-    display:flex;justify-content:center;gap:8px;
-    padding:4px 10px 10px;
-  }
+  .popup-body{padding:10px;display:flex;align-items:flex-start;gap:10px}
+  .popup-icon{font-size:24px;flex-shrink:0;margin-top:2px}
+  .popup-text{font-size:11px;line-height:1.5}
+  .popup-btns{display:flex;justify-content:center;gap:8px;padding:4px 10px 10px}
 
   /* ── TASKBAR ── */
   #taskbar{
     position:fixed;bottom:0;left:0;right:0;height:36px;
-    background:#C0C0C0;
-    border-top:2px solid #fff;
+    background:#C0C0C0;border-top:2px solid #fff;
     display:flex;align-items:center;gap:4px;
     padding:0 4px;z-index:5000;
   }
   #start-btn{
-    height:26px;padding:0 8px;
-    background:#C0C0C0;
+    height:26px;padding:0 8px;background:#C0C0C0;
     border-top:1.5px solid #fff;border-left:1.5px solid #fff;
     border-right:1.5px solid #808080;border-bottom:1.5px solid #808080;
     display:flex;align-items:center;gap:5px;
     font-size:11px;font-weight:bold;cursor:pointer;
-    font-family:'Courier New',monospace;
+    font-family:'Courier New',monospace;flex-shrink:0;
   }
   #start-btn:active,#start-btn.pressed{
     border-top:1.5px solid #808080;border-left:1.5px solid #808080;
     border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;
   }
-  #start-btn img{width:16px;height:16px;image-rendering:pixelated}
-  .task-area{
-    flex:1;height:26px;
+  .task-area{flex:1;height:26px;overflow:hidden;display:flex;gap:2px;align-items:center}
+  .taskbar-btn{
+    height:22px;padding:0 8px;min-width:80px;max-width:140px;
+    background:#C0C0C0;font-size:10px;font-family:'Courier New',monospace;
+    border-top:1px solid #fff;border-left:1px solid #fff;
+    border-right:1px solid #808080;border-bottom:1px solid #808080;
+    cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    display:flex;align-items:center;gap:4px;
+  }
+  .taskbar-btn.active{
     border-top:1px solid #808080;border-left:1px solid #808080;
     border-right:1px solid #fff;border-bottom:1px solid #fff;
+    background:#D4D0C8;
   }
   #clock{
     padding:2px 8px;height:26px;
     border-top:1px solid #808080;border-left:1px solid #808080;
     border-right:1px solid #fff;border-bottom:1px solid #fff;
     font-size:11px;display:flex;align-items:center;
-    font-family:'Courier New',monospace;
+    font-family:'Courier New',monospace;white-space:nowrap;flex-shrink:0;
   }
 
   /* ── START MENU ── */
   #start-menu{
-    position:fixed;bottom:36px;left:0;
-    width:220px;
+    position:fixed;bottom:36px;left:0;width:230px;
     background:#C0C0C0;
     border-top:2px solid #fff;border-left:2px solid #fff;
     border-right:2px solid #808080;border-bottom:2px solid #808080;
@@ -201,143 +310,425 @@
   .start-menu-inner{display:flex;width:100%}
   .start-sidebar{
     width:28px;background:#000080;
-    display:flex;align-items:center;justify-content:center;
-    padding:6px 0;
+    display:flex;align-items:center;justify-content:center;padding:6px 0;flex-shrink:0;
   }
   .start-sidebar span{
     color:#C0C0C0;font-size:11px;font-weight:bold;
-    writing-mode:vertical-rl;transform:rotate(180deg);
-    letter-spacing:1px;
+    writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:1px;
   }
   .start-items{flex:1;padding:4px 0}
-  .start-item{
-    display:flex;align-items:center;gap:8px;
-    padding:6px 8px;cursor:pointer;
-    font-size:11px;color:#000;
-  }
+  .start-item{display:flex;align-items:center;gap:8px;padding:6px 8px;cursor:pointer;font-size:11px;color:#000}
   .start-item:hover{background:#000080;color:#fff}
-  .start-item img{width:20px;height:20px;image-rendering:pixelated}
+  .start-divider{height:1px;background:#808080;margin:4px 6px}
 
-  /* ── ABOUT WINDOW (draggable) ── */
-  .about-win{
-    top:60px;left:100px;width:420px;
-  }
-  .about-content{max-height:300px;overflow-y:auto;line-height:1.6;font-size:11px}
-  .about-content::-webkit-scrollbar{width:14px}
-  .about-content::-webkit-scrollbar-track{background:#C0C0C0;border:1px inset #808080}
-  .about-content::-webkit-scrollbar-thumb{
-    background:#C0C0C0;
-    border-top:1px solid #fff;border-left:1px solid #fff;
-    border-right:1px solid #808080;border-bottom:1px solid #808080;
-  }
+  /* ── DONATE ── */
+  .donate-qr{text-align:center;padding:6px 0}
+  .donate-qr img{width:130px;height:130px;cursor:pointer;border:2px inset #808080}
+  .donate-qr p{font-size:10px;margin-top:5px}
 
-  /* ── DONATE DIALOG ── */
-  .donate-win{top:80px;left:calc(50% - 160px);width:320px}
-  .donate-qr{text-align:center;padding:8px 0}
-  .donate-qr img{width:140px;height:140px;cursor:pointer;border:2px inset #808080}
-  .donate-qr p{font-size:10px;margin-top:6px}
-
-  /* ── HIDDEN ── */
-  .hidden{display:none!important}
-
-  /* ── MODAL OVERLAY for QR zoom ── */
+  /* ── QR ZOOM ── */
   #qr-zoom{
     position:fixed;inset:0;z-index:9990;
     background:rgba(0,0,0,0.6);
     display:none;align-items:center;justify-content:center;
   }
   #qr-zoom.open{display:flex}
-  #qr-zoom .win98-window{width:380px}
-  #qr-zoom img{width:100%;display:block;border:2px inset #808080}
 
-  /* ── HOURGLASS CURSOR when loading ── */
-  .loading *{cursor:wait!important}
+  .hidden{display:none!important}
 </style>
 </head>
 <body>
 
 <!-- RICKROLL -->
 <div id="rickroll-overlay">
-  <video id="rickroll-frame" autoplay playsinline
-    style="width:100%;height:100%;object-fit:cover">
+  <video id="rickroll-frame" autoplay playsinline style="width:100%;height:100%;object-fit:cover">
     <source src="assets/rickroll.mp4" type="video/mp4">
   </video>
   <script>
-    // unmute after 800ms to satisfy browser autoplay policy
-    const vid = document.getElementById('rickroll-frame');
-    vid.muted = true;
-    vid.play().then(() => {
-      setTimeout(() => { vid.muted = false; }, 800);
-    }).catch(()=>{});
-    // trigger skip when video ends
-    vid.addEventListener('ended', skipVideo);
+    const vid=document.getElementById('rickroll-frame');
+    vid.muted=true;
+    vid.play().then(()=>{setTimeout(()=>{vid.muted=false;},800);}).catch(()=>{});
+    vid.addEventListener('ended',()=>skipVideo());
   </script>
   <button id="skip-btn" onclick="skipVideo()">SKIP ⏭</button>
 </div>
 
 <!-- WIN98 DESKTOP -->
 <div id="desktop">
-  <!-- ICONS -->
   <div class="icon-col">
-    <div class="desktop-icon" id="icon-0" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/computer-4.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>🖥</text></svg>'" alt="">
+
+    <div class="desktop-icon" ondblclick="openWin('about-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">🖥️</div>
       <span class="icon-label">My Computer</span>
     </div>
-    <div class="desktop-icon" id="icon-1" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/directory_closed-5.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>📁</text></svg>'" alt="">
+
+    <div class="desktop-icon" ondblclick="openWin('docs-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">📁</div>
       <span class="icon-label">My Documents</span>
     </div>
-    <div class="desktop-icon" id="icon-2" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/entire_network_globe-0.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>🌐</text></svg>'" alt="">
+
+    <div class="desktop-icon" ondblclick="openWin('network-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">🌐</div>
       <span class="icon-label">Network</span>
     </div>
-    <div class="desktop-icon" id="icon-3" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_full_2k-2.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>🗑</text></svg>'" alt="">
-      <span class="icon-label">Recycle Bin</span>
-    </div>
-    <div class="desktop-icon" id="icon-4" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/computer_musical_keyboard-1.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>🎵</text></svg>'" alt="">
+
+    <div class="desktop-icon" ondblclick="openWin('music-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">🎵</div>
       <span class="icon-label">Music</span>
     </div>
-    <div class="desktop-icon" id="icon-5" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/game_mine_1-0.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>🎮</text></svg>'" alt="">
+
+    <div class="desktop-icon" ondblclick="openWin('games-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">🎮</div>
       <span class="icon-label">Games</span>
     </div>
-    <div class="desktop-icon" id="icon-6" onclick="openAbout()">
-      <img src="https://win98icons.alexmeub.com/icons/png/directory_folder_options-2.png" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%23008080%22/><text y=%2224%22 font-size=%2224%22>💼</text></svg>'" alt="">
+
+    <div class="desktop-icon" ondblclick="openWin('art-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">🎨</div>
+      <span class="icon-label">Art &amp; Design</span>
+    </div>
+
+    <div class="desktop-icon" ondblclick="openWin('freelance-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">💼</div>
       <span class="icon-label">Freelance</span>
     </div>
-  </div>
 
-  <!-- ABOUT WINDOW -->
-  <div class="win98-window about-win hidden" id="about-win">
+    <div class="desktop-icon" ondblclick="openWin('recycle-win')" onclick="selectIcon(this)">
+      <div class="icon-emoji">🗑️</div>
+      <span class="icon-label">Recycle Bin</span>
+    </div>
+
+  </div><!-- end icon-col -->
+
+
+  <!-- ══ MY COMPUTER — ABOUT ME ══ -->
+  <div class="win98-window hidden" id="about-win">
     <div class="win98-titlebar" onmousedown="startDrag(event,'about-win')">
-      <span class="title-text">📄 About Augustine.txt</span>
-      <span class="win98-close" onclick="closeWin('about-win')">✖</span>
+      <span class="title-text">🖥️ My Computer — Augustine.exe</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('about-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('about-win')">□</span>
+        <span class="win98-close" onclick="closeWin('about-win')">✖</span>
+      </div>
     </div>
     <div class="win98-content">
-      <div class="about-content">
-        <p><strong>Name:</strong> Augustine Julian Anak Iha</p><br>
-        <p><strong>Role:</strong> CS Student · Systems &amp; Networking · Flutter Dev</p><br>
-        <p><strong>Bio:</strong> Motivated and passionate CS undergraduate with a love for building things — from network infrastructure to AR experiences. I'm also into music, games, and freelance projects on the side.</p><br>
-        <p><strong>Certifications:</strong> Cisco CCNA, Linux Essentials, Intro to Cybersecurity</p><br>
-        <p><strong>Internship:</strong> C.M Systems Associate, Kuching</p><br>
-        <p><strong>Fun fact:</strong> I rickrolled you. You're welcome.</p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #808080">
+        <div style="width:56px;height:56px;background:#000080;border:2px inset #808080;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0">👨‍💻</div>
+        <div>
+          <strong style="font-size:13px;display:block">Augustine Julian Anak Iha</strong>
+          <span style="font-size:10px;color:#444">@ August &nbsp;·&nbsp; CS Undergraduate</span><br>
+          <span style="font-size:10px;color:#000080">Network Engineer in the making 🚀</span>
+        </div>
       </div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <tr style="background:#E8E8E8"><td style="padding:5px 4px;font-weight:bold;white-space:nowrap;width:90px">🎓 Degree</td><td style="padding:5px 4px">BSc Computer Systems &amp; Networking</td></tr>
+        <tr><td style="padding:5px 4px;font-weight:bold">🏢 Internship</td><td style="padding:5px 4px">C.M Systems Associate, Kuching</td></tr>
+        <tr style="background:#E8E8E8"><td style="padding:5px 4px;font-weight:bold">📜 Certs</td><td style="padding:5px 4px">Cisco CCNA (×3) · Linux Essentials · Cybersecurity</td></tr>
+        <tr><td style="padding:5px 4px;font-weight:bold">🛠 Skills</td><td style="padding:5px 4px">Flutter · Unity · AR · Python · Networking · Web</td></tr>
+        <tr style="background:#E8E8E8"><td style="padding:5px 4px;font-weight:bold">📍 Location</td><td style="padding:5px 4px">Kuching, Sarawak, Malaysia</td></tr>
+        <tr><td style="padding:5px 4px;font-weight:bold">🎯 Goal</td><td style="padding:5px 4px">Network Engineer → Network Architect</td></tr>
+        <tr style="background:#E8E8E8"><td style="padding:5px 4px;font-weight:bold">🎉 Fun Fact</td><td style="padding:5px 4px">I just rickrolled you. You're welcome. 🎵</td></tr>
+      </table>
       <br>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
         <span class="win98-btn" onclick="window.open('https://wa.me/60142854170','_blank')">📱 WhatsApp</span>
         <span class="win98-btn" onclick="window.open('mailto:augustinejulian21@email.com','_blank')">✉ Email</span>
         <span class="win98-btn" onclick="closeWin('about-win')">OK</span>
       </div>
     </div>
+    <div class="win98-statusbar"><span class="status-cell">Augustine Julian Anak Iha</span><span class="status-cell">Open for work ✅</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'about-win')"></div>
   </div>
 
-  <!-- DONATE WINDOW -->
-  <div class="win98-window donate-win hidden" id="donate-win">
+
+  <!-- ══ MY DOCUMENTS — CV & CERTS ══ -->
+  <div class="win98-window hidden" id="docs-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'docs-win')">
+      <span class="title-text">📁 My Documents — Augustine</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('docs-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('docs-win')">□</span>
+        <span class="win98-close" onclick="closeWin('docs-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div style="font-size:10px;color:#444;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #D0D0D0">
+        C:\Users\August\Documents\ — 5 objects
+      </div>
+      <div class="doc-row" onclick="window.open('assets/cert-itn.pdf','_blank')">
+        <span style="font-size:16px">📄</span>
+        <span>CCNA_Intro_to_Networks_2020.pdf</span>
+        <span style="margin-left:auto;opacity:.55;font-size:10px">172 KB</span>
+      </div>
+      <div class="doc-row" onclick="window.open('assets/cert-srwe.pdf','_blank')">
+        <span style="font-size:16px">📄</span>
+        <span>CCNA_Switching_Routing_2023.pdf</span>
+        <span style="margin-left:auto;opacity:.55;font-size:10px">172 KB</span>
+      </div>
+      <div class="doc-row" onclick="window.open('assets/cert-ensa.pdf','_blank')">
+        <span style="font-size:16px">📄</span>
+        <span>CCNA_Enterprise_Automation_2024.pdf</span>
+        <span style="margin-left:auto;opacity:.55;font-size:10px">172 KB</span>
+      </div>
+      <div class="doc-row" onclick="window.open('index.html','_blank')">
+        <span style="font-size:16px">🌐</span>
+        <span>Portfolio_Website.url</span>
+        <span style="margin-left:auto;opacity:.55;font-size:10px">1 KB</span>
+      </div>
+      <div class="doc-row" onclick="window.open('https://wa.me/60142854170','_blank')">
+        <span style="font-size:16px">📝</span>
+        <span>Contact_Augustine.txt</span>
+        <span style="margin-left:auto;opacity:.55;font-size:10px">1 KB</span>
+      </div>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell">5 object(s)</span><span class="status-cell">Click to open</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'docs-win')"></div>
+  </div>
+
+
+  <!-- ══ NETWORK — LINKEDIN / SOCIAL ══ -->
+  <div class="win98-window hidden" id="network-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'network-win')">
+      <span class="title-text">🌐 Network — Connect.lnk</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('network-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('network-win')">□</span>
+        <span class="win98-close" onclick="closeWin('network-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div class="linkedin-card">
+        <div style="width:60px;height:60px;border-radius:50%;background:#fff;border:3px solid #fff;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:30px">👨‍💻</div>
+        <strong style="font-size:13px;display:block">Augustine Julian Anak Iha</strong>
+        <span style="font-size:10px;opacity:.9">CS Student · Network Enthusiast · Flutter Dev</span><br>
+        <span style="font-size:10px;background:rgba(0,0,0,0.3);padding:2px 8px;display:inline-block;margin-top:4px">📍 Kuching, Sarawak, Malaysia</span>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-weight:bold;margin-bottom:6px;font-size:11px">🔗 Find me online:</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span class="win98-btn" onclick="window.open('https://www.linkedin.com/in/augustine-julian-anak-iha-26043b280','_blank')">💼 LinkedIn Profile</span>
+          <span class="win98-btn" onclick="window.open('https://github.com/augus-tj','_blank')">🐙 GitHub — august-tj</span>
+          <span class="win98-btn" onclick="window.open('https://www.credly.com/users/augustine-julian-iha','_blank')">🏅 Credly Badges</span>
+          <span class="win98-btn" onclick="window.open('https://wa.me/60142854170','_blank')">📱 WhatsApp</span>
+        </div>
+      </div>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell">Internet Explorer 6.0</span><span class="status-cell">✅ Connected</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'network-win')"></div>
+  </div>
+
+
+  <!-- ══ MUSIC — WINAMP ══ -->
+  <div class="win98-window hidden" id="music-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'music-win')">
+      <span class="title-text">🎵 Music — August_WINAMP.exe</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('music-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('music-win')">□</span>
+        <span class="win98-close" onclick="closeWin('music-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div class="music-player">
+        <div style="font-size:9px;letter-spacing:2px;margin-bottom:4px;opacity:.7">♫ AUGUST WINAMP 2.0</div>
+        <div style="font-size:12px;font-weight:bold;margin-bottom:2px" id="now-playing">♪ Select a track below</div>
+        <div class="music-visualizer">
+          <div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div>
+          <div class="music-bar"></div><div class="music-bar"></div><div class="music-bar"></div>
+          <div class="music-bar"></div>
+        </div>
+        <div style="font-size:10px;opacity:.7">🎸 Guitar &nbsp;·&nbsp; 🎹 Piano &nbsp;·&nbsp; 🎤 Vocals</div>
+      </div>
+      <div style="font-size:11px;font-weight:bold;margin-bottom:6px">🎼 About My Music</div>
+      <div style="font-size:11px;line-height:1.65;color:#222;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #D0D0D0">
+        Music is my creative outlet beyond code. I play guitar and dabble in production.
+        Influenced by indie, lo-fi, and cinematic soundscapes. Currently learning piano.
+        I also compose short background tracks for my game projects.
+      </div>
+      <div style="font-size:10px;font-weight:bold;padding:3px 6px;background:#D4D0C8;border-bottom:1px solid #808080;margin-bottom:0">🎵 Playlist — August's Picks</div>
+      <div class="music-track" onclick="setTrack(this,'Lo-fi Study Beats')">♪ Lo-fi Study Beats <span style="opacity:.55;margin-left:auto">3:24</span></div>
+      <div class="music-track" onclick="setTrack(this,'Acoustic Riff No.3 [Original]')">♪ Acoustic Riff No.3 <span style="font-size:9px;opacity:.6">[original]</span><span style="opacity:.55;margin-left:auto">2:12</span></div>
+      <div class="music-track" onclick="setTrack(this,'Cinematic Loop')">♪ Cinematic Loop <span style="opacity:.55;margin-left:auto">4:07</span></div>
+      <div class="music-track" onclick="setTrack(this,'Late Night Coding Playlist')">♪ Late Night Coding <span style="opacity:.55;margin-left:auto">∞</span></div>
+      <div class="music-track" onclick="setTrack(this,'Game OST — Endless Runner')">♪ Game OST — Endless Runner <span style="font-size:9px;opacity:.6">[original]</span><span style="opacity:.55;margin-left:auto">1:48</span></div>
+      <br>
+      <span class="win98-btn" onclick="window.open('https://www.youtube.com/','_blank')">▶ Open Music Channel</span>
+      &nbsp;<span style="font-size:9px;color:#666">[link your channel here]</span>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell" id="music-status">Ready</span><span class="status-cell">Vol: 100%</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'music-win')"></div>
+  </div>
+
+
+  <!-- ══ GAMES — MINIGAMES STUDIO ══ -->
+  <div class="win98-window hidden" id="games-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'games-win')">
+      <span class="title-text">🎮 Games — AugustGameStudio.exe</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('games-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('games-win')">□</span>
+        <span class="win98-close" onclick="closeWin('games-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div style="font-size:10px;color:#444;padding:4px 6px;background:#D4D0C8;border-bottom:1px solid #808080;margin-bottom:10px">
+        🕹️ August Game Studio — Double-click a game to open on GitHub
+      </div>
+      <div class="game-grid" id="gameGrid"></div>
+      <br>
+      <div style="border-top:1px solid #808080;padding-top:8px;display:flex;gap:6px;align-items:center">
+        <span class="win98-btn" onclick="window.open('https://github.com/augus-tj','_blank')">🐙 All Projects on GitHub</span>
+        <span style="font-size:9px;color:#555">More games coming soon...</span>
+      </div>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell" id="game-status">3 games found</span><span class="status-cell">Dbl-click to launch</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'games-win')"></div>
+  </div>
+
+
+  <!-- ══ ART & DESIGN ══ -->
+  <div class="win98-window hidden" id="art-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'art-win')">
+      <span class="title-text">🎨 Art &amp; Design — August_Creative.exe</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('art-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('art-win')">□</span>
+        <span class="win98-close" onclick="closeWin('art-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div style="font-size:10px;color:#444;padding:4px 6px;background:#D4D0C8;border-bottom:1px solid #808080;margin-bottom:10px">
+        🖌️ Creative work beyond code — UI/UX, illustrations &amp; visual design
+      </div>
+      <div class="art-grid">
+        <div>
+          <div class="art-piece" style="background:linear-gradient(135deg,#000080,#6600CC)" title="Placeholder — add your work">🖥️</div>
+          <div class="art-caption">UI Design</div>
+        </div>
+        <div>
+          <div class="art-piece" style="background:linear-gradient(135deg,#006600,#00CC44)" title="Placeholder">🌿</div>
+          <div class="art-caption">Illustration</div>
+        </div>
+        <div>
+          <div class="art-piece" style="background:linear-gradient(135deg,#660000,#CC3300)" title="Placeholder">🎮</div>
+          <div class="art-caption">Game Art</div>
+        </div>
+        <div>
+          <div class="art-piece" style="background:linear-gradient(135deg,#003366,#0066CC)" title="Placeholder">📱</div>
+          <div class="art-caption">Mobile UI</div>
+        </div>
+        <div>
+          <div class="art-piece" style="background:linear-gradient(135deg,#4B0082,#9400D3)" title="Placeholder">✨</div>
+          <div class="art-caption">AR Concept</div>
+        </div>
+        <div>
+          <div class="art-piece" style="background:linear-gradient(135deg,#333,#666)" title="Placeholder">🎬</div>
+          <div class="art-caption">Motion</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #808080;padding-top:8px;font-size:11px;line-height:1.6;color:#333">
+        I enjoy crafting visual experiences alongside my technical work — from app UI/UX to game art and AR concepts.
+        Comfortable in Figma, Canva, and Unity's shader graph.
+      </div>
+      <br>
+      <span class="win98-btn" onclick="alert('Portfolio gallery — coming soon! Drop your Behance/Dribbble link here.')">🖼️ View Gallery [Placeholder]</span>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell">6 items</span><span class="status-cell">Placeholder — add your work</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'art-win')"></div>
+  </div>
+
+
+  <!-- ══ FREELANCE — SERVICES ══ -->
+  <div class="win98-window hidden" id="freelance-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'freelance-win')">
+      <span class="title-text">💼 Freelance — Services.txt</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('freelance-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('freelance-win')">□</span>
+        <span class="win98-close" onclick="closeWin('freelance-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div style="font-weight:bold;font-size:12px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #808080">
+        🛠 Available for Hire — What I Can Build For You
+      </div>
+      <div class="service-row">
+        <span class="service-icon">📱</span>
+        <div>
+          <div class="service-title">Mobile App Development</div>
+          <div class="service-desc">Cross-platform apps using Flutter/Dart. iOS &amp; Android from one codebase. Firebase integration, real-time data, clean UI.</div>
+          <span class="service-badge">Flutter</span><span class="service-badge">Firebase</span><span class="service-badge">Dart</span>
+        </div>
+      </div>
+      <div class="service-row">
+        <span class="service-icon">🔮</span>
+        <div>
+          <div class="service-title">AR / Game Development</div>
+          <div class="service-desc">Augmented reality experiences and 2D/3D games using Unity. ARCore for Android. Interactive educational content.</div>
+          <span class="service-badge">Unity</span><span class="service-badge">ARCore</span><span class="service-badge">C#</span>
+        </div>
+      </div>
+      <div class="service-row">
+        <span class="service-icon">🌐</span>
+        <div>
+          <div class="service-title">Web Development</div>
+          <div class="service-desc">Portfolio sites, dashboards, and landing pages. Clean HTML/CSS/JS or PHP + MySQL backends.</div>
+          <span class="service-badge">HTML/CSS</span><span class="service-badge">JavaScript</span><span class="service-badge">PHP</span>
+        </div>
+      </div>
+      <div class="service-row">
+        <span class="service-icon">🔌</span>
+        <div>
+          <div class="service-title">Network Setup &amp; IT Support</div>
+          <div class="service-desc">Small office/home network setup, troubleshooting, Cisco configuration, and general IT support.</div>
+          <span class="service-badge">Cisco</span><span class="service-badge">Windows Server</span><span class="service-badge">Wireshark</span>
+        </div>
+      </div>
+      <br>
+      <span class="win98-btn" onclick="window.open('https://wa.me/60142854170','_blank')">📱 Contact via WhatsApp</span>
+      &nbsp;
+      <span class="win98-btn" onclick="window.open('mailto:augustinejulian21@email.com','_blank')">✉ Send Email</span>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell">4 services</span><span class="status-cell">Open for work ✅</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'freelance-win')"></div>
+  </div>
+
+
+  <!-- ══ RECYCLE BIN ══ -->
+  <div class="win98-window hidden" id="recycle-win">
+    <div class="win98-titlebar" onmousedown="startDrag(event,'recycle-win')">
+      <span class="title-text">🗑️ Recycle Bin</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('recycle-win')">─</span>
+        <span class="win98-max" onclick="maximizeWin('recycle-win')">□</span>
+        <span class="win98-close" onclick="closeWin('recycle-win')">✖</span>
+      </div>
+    </div>
+    <div class="win98-content">
+      <div style="font-size:10px;color:#444;margin-bottom:8px">These items are permanently deleted... or are they? 👀</div>
+      <div class="recycle-item">🗑️ &nbsp;social_life.exe <span style="margin-left:auto;opacity:.5;font-size:10px">Deleted: 2021</span></div>
+      <div class="recycle-item">🗑️ &nbsp;sleep_schedule.bat <span style="margin-left:auto;opacity:.5;font-size:10px">Deleted: 2022</span></div>
+      <div class="recycle-item">🗑️ &nbsp;free_time.dll <span style="margin-left:auto;opacity:.5;font-size:10px">Deleted: 2023</span></div>
+      <div class="recycle-item">🗑️ &nbsp;sanity.sys <span style="margin-left:auto;opacity:.5;font-size:10px">Deleted: during finals</span></div>
+      <div class="recycle-item">🗑️ &nbsp;bugs_fixed.log <span style="margin-left:auto;opacity:.5;font-size:10px">0 bytes</span></div>
+      <br>
+      <div style="display:flex;gap:6px">
+        <span class="win98-btn" onclick="alert('Error: Cannot empty. These are permanent losses.')">Empty Recycle Bin</span>
+        <span class="win98-btn" onclick="closeWin('recycle-bin')">Close</span>
+      </div>
+    </div>
+    <div class="win98-statusbar"><span class="status-cell">5 object(s)</span><span class="status-cell">Cannot restore</span></div>
+    <div class="resize-handle" onmousedown="startResize(event,'recycle-win')"></div>
+  </div>
+
+
+  <!-- ══ DONATE ══ -->
+  <div class="win98-window hidden" id="donate-win">
     <div class="win98-titlebar" onmousedown="startDrag(event,'donate-win')">
       <span class="title-text">💰 Support Developer.exe</span>
-      <span class="win98-close" onclick="closeWin('donate-win')">✖</span>
+      <div class="win98-btns">
+        <span class="win98-min" onclick="minimizeWin('donate-win')">─</span>
+        <span class="win98-close" onclick="closeWin('donate-win')">✖</span>
+      </div>
     </div>
     <div class="win98-content">
       <div class="donate-qr">
@@ -352,16 +743,19 @@
         <span class="win98-btn" onclick="closeWin('donate-win')">Close</span>
       </div>
     </div>
+    <div class="resize-handle" onmousedown="startResize(event,'donate-win')"></div>
   </div>
-</div>
+
+</div><!-- end desktop -->
+
 
 <!-- TASKBAR -->
 <div id="taskbar">
   <div id="start-btn" onclick="toggleStart()">
-    <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" onerror="this.style.display='none'" alt="">
+    <span style="font-size:14px">🪟</span>
     <strong>Start</strong>
   </div>
-  <div class="task-area"></div>
+  <div class="task-area" id="taskArea"></div>
   <div id="clock">12:00 PM</div>
 </div>
 
@@ -370,25 +764,25 @@
   <div class="start-menu-inner">
     <div class="start-sidebar"><span>Windows 98</span></div>
     <div class="start-items">
-      <div class="start-item" onclick="openDonate();toggleStart()">
-        <img src="https://win98icons.alexmeub.com/icons/png/document-0.png" onerror="this.style.display='none'" alt="">
-        Donate
-      </div>
-      <div class="start-item" onclick="window.location.href='index.html'">
-        <img src="https://win98icons.alexmeub.com/icons/png/appwizard-5.png" onerror="this.style.display='none'" alt="">
-        Back to Portfolio
-      </div>
-      <div class="start-item" onclick="window.close();toggleStart()">
-        <img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" onerror="this.style.display='none'" alt="">
-        Close Website
-      </div>
+      <div class="start-item" onclick="openWin('about-win');toggleStart()">🖥️ &nbsp;My Computer</div>
+      <div class="start-item" onclick="openWin('docs-win');toggleStart()">📁 &nbsp;My Documents</div>
+      <div class="start-item" onclick="openWin('network-win');toggleStart()">🌐 &nbsp;Network</div>
+      <div class="start-item" onclick="openWin('music-win');toggleStart()">🎵 &nbsp;Music</div>
+      <div class="start-item" onclick="openWin('games-win');toggleStart()">🎮 &nbsp;Games</div>
+      <div class="start-item" onclick="openWin('art-win');toggleStart()">🎨 &nbsp;Art &amp; Design</div>
+      <div class="start-item" onclick="openWin('freelance-win');toggleStart()">💼 &nbsp;Freelance</div>
+      <div class="start-divider"></div>
+      <div class="start-item" onclick="openWin('donate-win');toggleStart()">💰 &nbsp;Donate</div>
+      <div class="start-item" onclick="window.location.href='index.html'">🏠 &nbsp;Back to Portfolio</div>
+      <div class="start-divider"></div>
+      <div class="start-item" onclick="window.close()">⏻ &nbsp;Shut Down</div>
     </div>
   </div>
 </div>
 
 <!-- QR ZOOM -->
 <div id="qr-zoom" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="win98-window" style="width:340px">
+  <div class="win98-window" style="width:340px;position:relative">
     <div class="win98-titlebar">
       <span class="title-text">🔍 DuitNow QR Viewer</span>
       <span class="win98-close" onclick="document.getElementById('qr-zoom').classList.remove('open')">✖</span>
@@ -408,89 +802,200 @@
 function updateClock(){
   const now=new Date();
   let h=now.getHours(),m=now.getMinutes(),ap='AM';
-  if(h>=12){ap='PM';if(h>12)h-=12;}
-  if(h===0)h=12;
+  if(h>=12){ap='PM';if(h>12)h-=12;}if(h===0)h=12;
   document.getElementById('clock').textContent=`${h}:${String(m).padStart(2,'0')} ${ap}`;
 }
-updateClock();
-setInterval(updateClock,1000);
+updateClock();setInterval(updateClock,1000);
 
-// ── SKIP VIDEO ──
+// ── SKIP / SHOW DESKTOP ──
 function skipVideo(){
   document.getElementById('rickroll-overlay').style.display='none';
-  const desk=document.getElementById('desktop');
-  desk.classList.add('visible');
+  document.getElementById('desktop').classList.add('visible');
   setTimeout(startChaos,400);
 }
+setTimeout(skipVideo,35000);
 
-// safety fallback in case video fails to load
-setTimeout(skipVideo, 35000);
-
-// ── CHAOS POPUPS ──
+// ── CHAOS (fires only once per session) ──
 const chaosMessages=[
   ["SYSTEM ERROR","A fatal exception has occurred.\nYou have been rickrolled! hehe"],
   ["VIRUS DETECTED","mango.dev.exe is very dangerous.\nInstall antivirus? (╯°□°）╯"],
-  ["KERNEL PANIC","Too many tabs open.\nHave you tried turning it off and on again?"],
+  ["KERNEL PANIC","Too many tabs open.\nTry turning it off and on again?"],
   ["WARNING","Unauthorized access to cringe content.\nProceed? (you already did)"],
   ["CRITICAL ERROR","This developer is too talented.\nWindows cannot handle it."],
   ["DISK FULL","Your mind is full of rickroll.\nPlease free up some memory."],
-  ["ILLEGAL OPERATION","mango.dev has performed an illegal operation.\n(just kidding it's legal)"],
+  ["ILLEGAL OPERATION","mango.dev performed an illegal operation.\n(just kidding, it's legal)"],
 ];
-let chaosActive=false;
-let chaosHasFired=false;
-const chaosEl=[];
-const chaosTimers=[];
-
+let chaosActive=false,chaosHasFired=false;
+const chaosEl=[],chaosTimers=[];
 function startChaos(){
-  if(chaosHasFired) return;
-  chaosHasFired=true;
-  chaosActive=true;
-  for(let i=0;i<50;i++){
-    const t=setTimeout(spawnPopup, i*60);
-    chaosTimers.push(t);
-  }
+  if(chaosHasFired)return;
+  chaosHasFired=true;chaosActive=true;
+  for(let i=0;i<50;i++){chaosTimers.push(setTimeout(spawnPopup,i*60));}
 }
-
 function spawnPopup(){
-  if(!chaosActive) return;
+  if(!chaosActive)return;
   const msg=chaosMessages[Math.floor(Math.random()*chaosMessages.length)];
   const el=document.createElement('div');
   el.className='chaos-popup';
-  const x=Math.random()*(window.innerWidth-280);
-  const y=Math.random()*(window.innerHeight-160-36);
-  el.style.left=x+'px';
-  el.style.top=y+'px';
+  el.style.left=Math.random()*(window.innerWidth-280)+'px';
+  el.style.top=Math.random()*(window.innerHeight-160-36)+'px';
   el.innerHTML=`
-    <div class="win98-titlebar">
-      <span style="font-size:11px">⚠ ${msg[0]}</span>
-      <span class="win98-close" onclick="this.closest('.chaos-popup').remove()">✖</span>
-    </div>
-    <div class="popup-body">
-      <span class="popup-icon">❌</span>
-      <span class="popup-text">${msg[1].replace('\n','<br>')}</span>
-    </div>
+    <div class="win98-titlebar"><span style="font-size:11px">⚠ ${msg[0]}</span>
+    <span class="win98-close" onclick="this.closest('.chaos-popup').remove()">✖</span></div>
+    <div class="popup-body"><span class="popup-icon">❌</span>
+    <span class="popup-text">${msg[1].replace('\n','<br>')}</span></div>
     <div class="popup-btns">
-      <span class="win98-btn" onclick="stopChaos()">OK</span>
-      <span class="win98-btn" onclick="stopChaos()">Cancel</span>
-    </div>`;
-  document.body.appendChild(el);
-  chaosEl.push(el);
+    <span class="win98-btn" onclick="stopChaos()">OK</span>
+    <span class="win98-btn" onclick="stopChaos()">Cancel</span></div>`;
+  document.body.appendChild(el);chaosEl.push(el);
 }
-
 function stopChaos(){
   chaosActive=false;
-  chaosTimers.forEach(t=>clearTimeout(t));
-  chaosTimers.length=0;
-  chaosEl.forEach(e=>e.remove());
-  chaosEl.length=0;
+  chaosTimers.forEach(t=>clearTimeout(t));chaosTimers.length=0;
+  chaosEl.forEach(e=>e.remove());chaosEl.length=0;
 }
+
+// ── GAMES DATA ──
+const games=[
+  {title:"Endless Runner",emoji:"🏃",bg:"linear-gradient(135deg,#000080,#0050A0)",tech:"Unity · C#",desc:"Subway Surfers-style educational endless runner",badge:"Unity",url:"https://github.com/augus-tj"},
+  {title:"AR Network Visualizer",emoji:"🔮",bg:"linear-gradient(135deg,#4B0082,#9400D3)",tech:"Unity · ARCore · C#",desc:"Visualise network devices in augmented reality",badge:"ARCore",url:"https://github.com/augus-tj"},
+  {title:"Mini Puzzle",emoji:"🧩",bg:"linear-gradient(135deg,#006600,#009900)",tech:"Flutter · Dart",desc:"Placeholder — coming soon!",badge:"Flutter",url:"https://github.com/augus-tj"},
+  {title:"Coming Soon...",emoji:"🕹️",bg:"linear-gradient(135deg,#333,#555)",tech:"???",desc:"Next game in development",badge:"TBA",url:"https://github.com/augus-tj"},
+];
+const gameGrid=document.getElementById('gameGrid');
+games.forEach(g=>{
+  const el=document.createElement('div');
+  el.className='game-card';
+  el.title='Double-click to open on GitHub';
+  el.ondblclick=()=>window.open(g.url,'_blank');
+  el.innerHTML=`
+    <div class="game-thumb" style="background:${g.bg}">${g.emoji}</div>
+    <div class="game-info">
+      <div class="game-title">${g.title}</div>
+      <div class="game-tech">${g.tech}</div>
+      <span class="game-badge">${g.badge}</span>
+    </div>`;
+  gameGrid.appendChild(el);
+});
+document.getElementById('game-status').textContent=games.length+' games found';
+
+// ── MUSIC TRACK SELECT ──
+function setTrack(el,name){
+  document.querySelectorAll('.music-track').forEach(t=>t.classList.remove('playing'));
+  el.classList.add('playing');
+  document.getElementById('now-playing').textContent='♪ '+name;
+  document.getElementById('music-status').textContent='Playing: '+name;
+}
+
+// ── Z-INDEX ──
+let zTop=300;
+const minimizedWindows={};
+function bringToFront(el){el.style.zIndex=++zTop;}
+document.querySelectorAll('.win98-window').forEach(w=>{
+  w.addEventListener('mousedown',()=>bringToFront(w));
+});
+
+// ── OPEN / CLOSE / MINIMIZE / MAXIMIZE ──
+function openWin(id){
+  const w=document.getElementById(id);
+  if(minimizedWindows[id]){w.style.display='';delete minimizedWindows[id];}
+  w.classList.remove('hidden');
+  bringToFront(w);updateTaskbar();
+}
+function closeWin(id){
+  document.getElementById(id).classList.add('hidden');
+  delete minimizedWindows[id];updateTaskbar();
+}
+let maximizedState={};
+function maximizeWin(id){
+  const w=document.getElementById(id);
+  if(maximizedState[id]){
+    const s=maximizedState[id];
+    w.style.left=s.left;w.style.top=s.top;w.style.width=s.width;w.style.height=s.height;
+    delete maximizedState[id];
+  } else {
+    maximizedState[id]={left:w.style.left,top:w.style.top,width:w.offsetWidth+'px',height:w.offsetHeight+'px'};
+    w.style.left='0';w.style.top='0';w.style.width='100vw';w.style.height='calc(100vh - 36px)';
+  }
+  bringToFront(w);
+}
+function minimizeWin(id){
+  const w=document.getElementById(id);
+  minimizedWindows[id]=true;w.style.display='none';updateTaskbar();
+}
+
+// ── TASKBAR ──
+const winMeta={
+  'about-win':    {icon:'🖥️', label:'My Computer'},
+  'docs-win':     {icon:'📁', label:'My Documents'},
+  'network-win':  {icon:'🌐', label:'Network'},
+  'music-win':    {icon:'🎵', label:'Music'},
+  'games-win':    {icon:'🎮', label:'Games'},
+  'art-win':      {icon:'🎨', label:'Art & Design'},
+  'freelance-win':{icon:'💼', label:'Freelance'},
+  'recycle-win':  {icon:'🗑️', label:'Recycle Bin'},
+  'donate-win':   {icon:'💰', label:'Donate'},
+};
+function updateTaskbar(){
+  const area=document.getElementById('taskArea');area.innerHTML='';
+  Object.keys(winMeta).forEach(id=>{
+    const w=document.getElementById(id);
+    const isOpen=!w.classList.contains('hidden');
+    if(!isOpen&&!minimizedWindows[id])return;
+    const btn=document.createElement('div');
+    btn.className='taskbar-btn'+(minimizedWindows[id]?'':' active');
+    btn.innerHTML=winMeta[id].icon+' '+winMeta[id].label;
+    btn.onclick=()=>{if(minimizedWindows[id])openWin(id);else minimizeWin(id);};
+    area.appendChild(btn);
+  });
+}
+
+// ── DRAG ──
+function startDrag(e,id){
+  const win=document.getElementById(id);
+  if(maximizedState[id])return;
+  const ox=e.clientX-win.offsetLeft,oy=e.clientY-win.offsetTop;
+  bringToFront(win);
+  function onMove(e){
+    let nx=e.clientX-ox,ny=e.clientY-oy;
+    nx=Math.max(0,Math.min(nx,window.innerWidth-win.offsetWidth));
+    ny=Math.max(0,Math.min(ny,window.innerHeight-36-26));
+    win.style.left=nx+'px';win.style.top=ny+'px';
+  }
+  function onUp(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+}
+
+// ── RESIZE ──
+function startResize(e,id){
+  e.stopPropagation();
+  const win=document.getElementById(id);
+  const startX=e.clientX,startY=e.clientY;
+  const startW=win.offsetWidth,startH=win.offsetHeight;
+  bringToFront(win);
+  function onMove(e){
+    const nw=Math.max(240,startW+(e.clientX-startX));
+    const nh=Math.max(120,startH+(e.clientY-startY));
+    win.style.width=nw+'px';win.style.height=nh+'px';
+  }
+  function onUp(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+}
+
+// ── ICON SELECTION ──
+function selectIcon(el){
+  document.querySelectorAll('.desktop-icon').forEach(ic=>ic.classList.remove('selected'));
+  el.classList.add('selected');
+}
+document.getElementById('desktop').addEventListener('click',e=>{
+  if(e.target.id==='desktop')
+    document.querySelectorAll('.desktop-icon').forEach(ic=>ic.classList.remove('selected'));
+});
 
 // ── START MENU ──
 function toggleStart(){
-  const m=document.getElementById('start-menu');
-  const b=document.getElementById('start-btn');
-  m.classList.toggle('open');
-  b.classList.toggle('pressed');
+  document.getElementById('start-menu').classList.toggle('open');
+  document.getElementById('start-btn').classList.toggle('pressed');
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest('#start-btn')&&!e.target.closest('#start-menu')){
@@ -499,71 +1004,9 @@ document.addEventListener('click',e=>{
   }
 });
 
-// ── WINDOWS ──
-function openAbout(){
-  const w=document.getElementById('about-win');
-  w.classList.remove('hidden');
-  bringToFront(w);
-}
-function openDonate(){
-  const w=document.getElementById('donate-win');
-  w.classList.remove('hidden');
-  bringToFront(w);
-}
-function closeWin(id){
-  document.getElementById(id).classList.add('hidden');
-}
-function openQrZoom(){
-  document.getElementById('qr-zoom').classList.add('open');
-}
-function downloadQr(){
-  const a=document.createElement('a');
-  a.href='assets/duitnowqr.png';a.download='duitnowqr.png';a.click();
-}
-
-// ── Z-INDEX MANAGEMENT ──
-let zTop=300;
-function bringToFront(el){
-  el.style.zIndex=++zTop;
-}
-document.querySelectorAll('.win98-window').forEach(w=>{
-  w.addEventListener('mousedown',()=>bringToFront(w));
-});
-
-// ── DRAG ──
-function startDrag(e,winId){
-  const win=document.getElementById(winId);
-  const startX=e.clientX-win.offsetLeft;
-  const startY=e.clientY-win.offsetTop;
-  bringToFront(win);
-  function onMove(e){
-    let nx=e.clientX-startX;
-    let ny=e.clientY-startY;
-    nx=Math.max(0,Math.min(nx,window.innerWidth-win.offsetWidth));
-    ny=Math.max(0,Math.min(ny,window.innerHeight-36-win.offsetHeight));
-    win.style.left=nx+'px';
-    win.style.top=ny+'px';
-  }
-  function onUp(){
-    document.removeEventListener('mousemove',onMove);
-    document.removeEventListener('mouseup',onUp);
-  }
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('mouseup',onUp);
-}
-
-// ── ICON SELECTION ──
-document.querySelectorAll('.desktop-icon').forEach((icon,i)=>{
-  icon.addEventListener('click',()=>{
-    document.querySelectorAll('.desktop-icon').forEach(ic=>ic.classList.remove('selected'));
-    icon.classList.add('selected');
-  });
-});
-document.getElementById('desktop').addEventListener('click',e=>{
-  if(e.target===document.getElementById('desktop')){
-    document.querySelectorAll('.desktop-icon').forEach(ic=>ic.classList.remove('selected'));
-  }
-});
+// ── QR ──
+function openQrZoom(){document.getElementById('qr-zoom').classList.add('open');}
+function downloadQr(){const a=document.createElement('a');a.href='assets/duitnowqr.png';a.download='duitnowqr.png';a.click();}
 </script>
 </body>
 </html>
