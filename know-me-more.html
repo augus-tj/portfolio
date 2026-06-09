@@ -357,42 +357,42 @@
 <div id="desktop">
   <div class="icon-col">
 
-    <div class="desktop-icon" ondblclick="openWin('about-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('about-win')\">
       <div class="icon-emoji">🖥️</div>
       <span class="icon-label">My Computer</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('docs-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('docs-win')\">
       <div class="icon-emoji">📁</div>
       <span class="icon-label">My Documents</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('network-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('network-win')\">
       <div class="icon-emoji">🌐</div>
       <span class="icon-label">Network</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('music-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('music-win')\">
       <div class="icon-emoji">🎵</div>
       <span class="icon-label">Music</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('games-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('games-win')\">
       <div class="icon-emoji">🎮</div>
       <span class="icon-label">Games</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('art-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('art-win')\">
       <div class="icon-emoji">🎨</div>
       <span class="icon-label">Art &amp; Design</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('freelance-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('freelance-win')\">
       <div class="icon-emoji">💼</div>
       <span class="icon-label">Freelance</span>
     </div>
 
-    <div class="desktop-icon" ondblclick="openWin('recycle-win')" onclick="selectIcon(this)">
+    <div class="desktop-icon" onclick=\"selectIcon(this);openWin('recycle-win')\">
       <div class="icon-emoji">🗑️</div>
       <span class="icon-label">Recycle Bin</span>
     </div>
@@ -867,7 +867,7 @@ games.forEach(g=>{
   const el=document.createElement('div');
   el.className='game-card';
   el.title='Double-click to open on GitHub';
-  el.ondblclick=()=>window.open(g.url,'_blank');
+  el.onclick=()=>window.open(g.url,'_blank');
   el.innerHTML=`
     <div class="game-thumb" style="background:${g.bg}">${g.emoji}</div>
     <div class="game-info">
@@ -991,6 +991,46 @@ document.getElementById('desktop').addEventListener('click',e=>{
   if(e.target.id==='desktop')
     document.querySelectorAll('.desktop-icon').forEach(ic=>ic.classList.remove('selected'));
 });
+
+// ── TOUCH SUPPORT ──
+// On touch devices, a tap = single click (already handled above).
+// This also maps touch to drag and resize for windows.
+(function(){
+  function touchToDrag(touchEvt, winId){
+    // convert touch into a synthetic mousedown for startDrag
+    const t = touchEvt.touches[0];
+    const fakeEvt = {clientX:t.clientX, clientY:t.clientY, preventDefault:()=>touchEvt.preventDefault()};
+    startDrag(fakeEvt, winId);
+  }
+  function touchToResize(touchEvt, winId){
+    const t = touchEvt.touches[0];
+    const fakeEvt = {clientX:t.clientX, clientY:t.clientY, stopPropagation:()=>touchEvt.stopPropagation()};
+    startResize(fakeEvt, winId);
+  }
+  // Attach touch listeners to titlebars and resize handles after DOM ready
+  document.querySelectorAll('.win98-titlebar').forEach(tb=>{
+    const win = tb.closest('.win98-window');
+    if(!win) return;
+    const id = win.id;
+    tb.addEventListener('touchstart', e=>touchToDrag(e, id), {passive:false});
+  });
+  document.querySelectorAll('.resize-handle').forEach(rh=>{
+    const win = rh.closest('.win98-window');
+    if(!win) return;
+    const id = win.id;
+    rh.addEventListener('touchstart', e=>touchToResize(e, id), {passive:false});
+  });
+  // Touch drag: mousemove equivalent
+  document.addEventListener('touchmove', e=>{
+    if(e.touches.length===1){
+      const t = e.touches[0];
+      document.dispatchEvent(new MouseEvent('mousemove',{clientX:t.clientX,clientY:t.clientY}));
+    }
+  },{passive:false});
+  document.addEventListener('touchend', ()=>{
+    document.dispatchEvent(new MouseEvent('mouseup'));
+  });
+})();
 
 // ── START MENU ──
 function toggleStart(){
