@@ -9,7 +9,7 @@ portfolio/
 ├── index.html          ← Main portfolio page
 ├── know-me-more.html   ← Win98 easter egg page
 ├── assets/
-│   └── duitnowqr.png   ← Add your DuitNow QR image here
+│   └── duitnowqr.png
 │   └── .....
 └── README.md
 ```
